@@ -49,22 +49,28 @@ async def random_wiki(ctx):
     await ctx.send(urllib.parse.unquote(r.url, encoding='utf-8'))
 
 
-@ bot.command(name="covid")
+@bot.command(name="covid")
 async def covid_data(ctx):
     url = 'https://www.worldometers.info/coronavirus/'
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     elems = soup.select('#maincounter-wrap > div > span')
-    number_regex = re.compile(r'\d*,*\d*,*\d*,*\d+')
+    number_regex = re.compile(r'[0-9,]*[0-9]')
+
+    confirmed = str(number_regex.findall(elems[0].text)).strip("[']")
+    deaths = str(number_regex.findall(elems[1].text)).strip("[']")
+    recovered = str(number_regex.findall(elems[2].text)).strip("[']")
 
     covid_embed = discord.Embed(
-        title="COVID-19 Data",
-        description=f"Current case data for COVID-19 from Worldometers\n"
-                    f'Confirmed Cases: {number_regex.findall(elems[0].text)}\n'
-                    f'Confirmed Deaths: {number_regex.findall(elems[1].text)}\n'
-                    f'Recovered Cases: {number_regex.findall(elems[2].text)}\n',
-        url=url
+        title="CURRENT COVID-19 DATA",
+        description=f'\n**Confirmed Cases:**  {confirmed}\n\n'
+                    f'**Confirmed Deaths:** {deaths}\n\n'
+                    f'**Recovered Cases:**  {recovered}\n\n',
+        url=url,
+        color=0xb73131
     )
+    covid_embed.set_footer(text='This data is taken from Worldometers',
+                           icon_url='https://www.worldometers.info/favicon/apple-icon-180x180.png')
 
     await ctx.send(embed=covid_embed)
 
@@ -72,8 +78,8 @@ async def covid_data(ctx):
 # Admin commands
 
 
-@ bot.command(name='create-channel')
-@ commands.has_role('admin')
+@bot.command(name='create-channel')
+@commands.has_role('admin')
 async def create_channel(ctx, channel_name='New-Channel'):
     guild = ctx.guild
     existing_channel = discord.utils.get(guild.channels, name=channel_name)
@@ -84,18 +90,18 @@ async def create_channel(ctx, channel_name='New-Channel'):
 
 # Bot Events
 
-@ bot.event
+@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
 
 
-@ bot.event
+@bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
-@ bot.event
+@bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
