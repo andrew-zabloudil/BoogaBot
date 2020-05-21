@@ -1,1 +1,1 @@
-worker: python boogabot.py
+worker: python3 boogabot.py
