@@ -18,22 +18,7 @@ bot = commands.Bot(command_prefix='!')
 # Regular commands
 
 
-# @bot.command(name='99', help='Responds with a random quote from Brooklyn 99')
-# async def nine_nine(ctx):
-#     brooklyn_99_quotes = [
-#         'I\'m the human form of the 💯 emoji.',
-#         'Bingpot!',
-#         (
-#             'Cool. Cool cool cool cool cool cool cool, '
-#             'no doubt no doubt no doubt no doubt.'
-#         ),
-#     ]
-
-#     response = random.choice(brooklyn_99_quotes)
-#     await ctx.send(response)
-
-
-@bot.command(name='roll_dice', help='Simulates rolling dice. Parameters: Number-of-dice Number-of-sides')
+@bot.command(name='roll_dice', help='Simulates rolling dice.')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
     dice = [
         str(random.choice(range(1, number_of_sides + 1)))
@@ -49,20 +34,35 @@ async def random_wiki(ctx):
     await ctx.send(urllib.parse.unquote(r.url, encoding='utf-8'))
 
 
-@bot.command(name="covid")
-async def covid_data(ctx):
-    url = 'https://www.worldometers.info/coronavirus/'
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    elems = soup.select('#maincounter-wrap > div > span')
-    number_regex = re.compile(r'[0-9,]*[0-9]')
+@bot.command(name="covid", help='Displays current COVID-19 data. Defaults to global, country can be specified.')
+async def covid_data(ctx, location=None):
 
-    confirmed = str(number_regex.findall(elems[0].text)).strip("[']")
-    deaths = str(number_regex.findall(elems[1].text)).strip("[']")
-    recovered = str(number_regex.findall(elems[2].text)).strip("[']")
+    if location:
+        if location.lower() in ['america', 'usa', 'united states']:
+            location = 'us'
+        url = f'https://www.worldometers.info/coronavirus/country/{location.lower()}'
+    else:
+        url = 'https://www.worldometers.info/coronavirus/'
+
+    r = requests.get(url)
+
+    if r.url == 'https://www.worldometers.info/404.shtml':
+        await ctx.send("That is not a valid country.")
+
+    soup = BeautifulSoup(r.text, 'html.parser')
+    numbers = soup.findAll("div", {'class': 'maincounter-number'})
+
+    confirmed = numbers[0].find('span').text
+    deaths = numbers[1].find('span').text
+    recovered = numbers[2].find('span').text
+
+    if location:
+        title = f'CURRENT COVID-19 DATA FOR {location.upper()}'
+    else:
+        title = "CURRENT GLOBAL COVID-19 DATA"
 
     covid_embed = discord.Embed(
-        title="CURRENT COVID-19 DATA",
+        title=title,
         description=f'\n**Confirmed Cases:**  {confirmed}\n\n'
                     f'**Confirmed Deaths:** {deaths}\n\n'
                     f'**Recovered Cases:**  {recovered}\n\n',
@@ -75,11 +75,34 @@ async def covid_data(ctx):
     await ctx.send(embed=covid_embed)
 
 
+@bot.command(name='covidnews', help='Displays COVID-19 news from BBC.')
+async def covid_news(ctx):
+    url = 'https://www.bbc.com/news/coronavirus'
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    links = soup.findAll("a", {'class': 'qa-heading-link'})
+    times = soup.findAll("span", {'class': 'qa-meta-time'})
+
+    covid_news_embed = discord.Embed(
+        title="COVID-19 BBC LIVE NEWS",
+        url=url,
+        color=0x2f89ef
+    )
+    for i in range(len(links)):
+        value = f'[{links[i].find("span").text}](https://www.bbc.com{links[i].attrs["href"]})'
+        covid_news_embed.add_field(
+            name=f'{times[i].find("span").text} (UTC+1)',
+            value=value,
+            inline=False
+        )
+
+    await ctx.send(embed=covid_news_embed)
+
 # Admin commands
 
 
-@bot.command(name='create-channel')
-@commands.has_role('admin')
+@ bot.command(name='create-channel', help='ADMIN: Creates new text channel.')
+@ commands.has_role('admin')
 async def create_channel(ctx, channel_name='New-Channel'):
     guild = ctx.guild
     existing_channel = discord.utils.get(guild.channels, name=channel_name)
@@ -90,18 +113,18 @@ async def create_channel(ctx, channel_name='New-Channel'):
 
 # Bot Events
 
-@bot.event
+@ bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
 
 
-@bot.event
+@ bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
-@bot.event
+@ bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
