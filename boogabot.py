@@ -44,13 +44,13 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 async def random_wiki(ctx):
     r = requests.head(
         'https://en.wikipedia.org/wiki/Special:Random', allow_redirects=True)
-    await ctx.send(print(urllib.parse.unquote(r.url)))
+    await ctx.send(print(urllib.parse.unquote(r.url, encoding='utf-8')))
 
 # Admin commands
 
 
-@bot.command(name='create-channel')
-@commands.has_role('admin')
+@ bot.command(name='create-channel')
+@ commands.has_role('admin')
 async def create_channel(ctx, channel_name='New-Channel'):
     guild = ctx.guild
     existing_channel = discord.utils.get(guild.channels, name=channel_name)
@@ -59,18 +59,18 @@ async def create_channel(ctx, channel_name='New-Channel'):
         await guild.create_text_channel(channel_name)
 
 
-@bot.event
+@ bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
 
 
-@bot.event
+@ bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
 
 
-@bot.event
+@ bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
