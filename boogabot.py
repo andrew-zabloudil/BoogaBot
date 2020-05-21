@@ -2,8 +2,10 @@
 
 import os
 import random
+import re
 import requests
 import urllib.parse
+from bs4 import BeautifulSoup
 
 import discord
 from discord.ext import commands
@@ -16,22 +18,22 @@ bot = commands.Bot(command_prefix='!')
 # Regular commands
 
 
-@bot.command(name='99', help='Responds with a random quote from Brooklyn 99')
-async def nine_nine(ctx):
-    brooklyn_99_quotes = [
-        'I\'m the human form of the 💯 emoji.',
-        'Bingpot!',
-        (
-            'Cool. Cool cool cool cool cool cool cool, '
-            'no doubt no doubt no doubt no doubt.'
-        ),
-    ]
+# @bot.command(name='99', help='Responds with a random quote from Brooklyn 99')
+# async def nine_nine(ctx):
+#     brooklyn_99_quotes = [
+#         'I\'m the human form of the 💯 emoji.',
+#         'Bingpot!',
+#         (
+#             'Cool. Cool cool cool cool cool cool cool, '
+#             'no doubt no doubt no doubt no doubt.'
+#         ),
+#     ]
 
-    response = random.choice(brooklyn_99_quotes)
-    await ctx.send(response)
+#     response = random.choice(brooklyn_99_quotes)
+#     await ctx.send(response)
 
 
-@bot.command(name='roll_dice', help='Simulates rolling dice.')
+@bot.command(name='roll_dice', help='Simulates rolling dice. Parameters: Number-of-dice Number-of-sides')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
     dice = [
         str(random.choice(range(1, number_of_sides + 1)))
@@ -44,7 +46,28 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 async def random_wiki(ctx):
     r = requests.head(
         'https://en.wikipedia.org/wiki/Special:Random', allow_redirects=True)
-    await ctx.send(print(urllib.parse.unquote(r.url, encoding='utf-8')))
+    await ctx.send(urllib.parse.unquote(r.url, encoding='utf-8'))
+
+
+@ bot.command(name="covid")
+async def covid_data(ctx):
+    url = 'https://www.worldometers.info/coronavirus/'
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    elems = soup.select('#maincounter-wrap > div > span')
+    number_regex = re.compile(r'\d*,*\d*,*\d*,*\d+')
+
+    covid_embed = discord.Embed(
+        title="COVID-19 Data",
+        description=f"Current case data for COVID-19 from Worldometers\n"
+                    f'Confirmed Cases: {number_regex.findall(elems[0].text)}\n'
+                    f'Confirmed Deaths: {number_regex.findall(elems[1].text)}\n'
+                    f'Recovered Cases: {number_regex.findall(elems[2].text)}\n',
+        url=url
+    )
+
+    await ctx.send(embed=covid_embed)
+
 
 # Admin commands
 
@@ -58,6 +81,8 @@ async def create_channel(ctx, channel_name='New-Channel'):
         print(f'Creating a new channel: {channel_name}')
         await guild.create_text_channel(channel_name)
 
+
+# Bot Events
 
 @ bot.event
 async def on_command_error(ctx, error):
