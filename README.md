@@ -1,0 +1,1 @@
+This is a Discord bot that I made for my own personal server as a project to learn Python.
