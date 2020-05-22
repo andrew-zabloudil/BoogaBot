@@ -12,7 +12,7 @@ from bot_commands import regular_commands
 from bot_commands import admin_commands
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TEST_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix='!')
 
 
