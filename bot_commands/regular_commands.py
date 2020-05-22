@@ -68,25 +68,73 @@ class RegularCommands(commands.Cog):
 
         await ctx.send(embed=covid_embed)
 
-    @commands.command(name='covidnews', help='Displays COVID-19 news from BBC.')
-    async def covid_news(self, ctx):
-        url = 'https://www.bbc.com/news/coronavirus'
-        r = requests.get(url)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        links = soup.findAll("a", {'class': 'qa-heading-link'})
-        times = soup.findAll("span", {'class': 'qa-meta-time'})
+    @commands.command(name='covidnews', help='Displays COVID-19 news. (Mixed, BBC, or Reuters)')
+    async def covid_news(self, ctx, source=None):
 
+        if source:
+            source = source.lower()
+        else:
+            source = 'mixed'
+
+        if source == 'bbc':
+            url = 'https://www.bbc.com/news/coronavirus'
+            r = requests.get(url)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            links = soup.findAll("a", {'class': 'qa-heading-link'})
+            color = 0xbb1919
+
+        elif source == 'reuters':
+            url = 'https://www.reuters.com/live-events/coronavirus-6-id2921484'
+            r = requests.get(url)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            links = soup.findAll("div", {
+                                 'class': 'FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2'})
+            color = 0xfb8033
+
+        elif source == 'mixed':
+            urls = ['https://www.bbc.com/news/coronavirus',
+                    'https://www.reuters.com/live-events/coronavirus-6-id2921484']
+            links = []
+            for url in urls:
+                r = requests.get(url)
+                soup = BeautifulSoup(r.text, 'html.parser')
+                links.append(soup.findAll("a", {'class': 'qa-heading-link'}))
+                links.append(soup.findAll("div", {
+                    'class': 'FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2'}))
+            links = [item for item in links if item != []]
+            color = 0x0073b1
         covid_news_embed = discord.Embed(
-            title="COVID-19 BBC LIVE NEWS",
+            title=f"COVID-19 {source.upper()} LIVE NEWS",
             url=url,
-            color=0x2f89ef
+            color=color
         )
-        for i in range(len(links)):
-            value = f'[{links[i].find("span").text}](https://www.bbc.com{links[i].attrs["href"]})'
-            covid_news_embed.add_field(
-                name=f'{times[i].find("span").text} (UTC+1)',
-                value=value,
-                inline=False
-            )
 
+        if source == 'bbc' or source == 'reuters':
+            for i in range(len(links)):
+                if source == 'bbc':
+                    name = 'BBC'
+                    value = f'[{links[i].find("span").text}](https://www.bbc.com{links[i].attrs["href"]})'
+
+                elif source == 'reuters':
+                    name = 'Reuters'
+                    value = f'[{links[i].find("a").text}]({links[i].find("a").attrs["href"]})'
+
+                covid_news_embed.add_field(
+                    name=name,
+                    value=value,
+                    inline=False
+                )
+
+        if source == "mixed":
+            for i in range(0, 5):
+                covid_news_embed.add_field(
+                    name='BBC',
+                    value=f'[{links[0][i].find("span").text}](https://www.bbc.com{links[0][i].attrs["href"]})',
+                    inline=False
+                )
+                covid_news_embed.add_field(
+                    name='Reuters',
+                    value=f'[{links[1][i].find("a").text}]({links[1][i].find("a").attrs["href"]})',
+                    inline=False
+                )
         await ctx.send(embed=covid_news_embed)
