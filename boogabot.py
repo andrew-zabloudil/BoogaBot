@@ -37,7 +37,8 @@ async def on_message(message):
     replies = {
         'ooga': 'Booga',
         'epic': 'WOW',
-        'oof': 'Thanks for contributing nothing to the conversation.'
+        'oof': 'Thanks for contributing nothing to the conversation.',
+        'wow': 'EPIC'
     }
 
     anime_replies = [
