@@ -10,7 +10,7 @@ class AdminCommands(commands.Cog):
         self.bot = bot
 
     @ commands.command(name='create-channel', help='ADMIN: Creates new text channel.')
-    @ commands.has_role('admin')
+    @ commands.has_permissions(administrator=True)
     async def create_channel(self, ctx, channel_name='New-Channel'):
         guild = ctx.guild
         existing_channel = discord.utils.get(guild.channels, name=channel_name)
