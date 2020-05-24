@@ -69,12 +69,9 @@ class RegularCommands(commands.Cog):
         await ctx.send(embed=covid_embed)
 
     @commands.command(name='covidnews', help='Displays COVID-19 news. (Mixed, BBC, or Reuters)')
-    async def covid_news(self, ctx, source=None):
+    async def covid_news(self, ctx, source='mixed'):
 
-        if source:
-            source = source.lower()
-        else:
-            source = 'mixed'
+        source = source.lower()
 
         if source == 'bbc':
             url = 'https://www.bbc.com/news/coronavirus'
@@ -138,6 +135,46 @@ class RegularCommands(commands.Cog):
                     inline=False
                 )
         await ctx.send(embed=covid_news_embed)
+
+    @commands.command(name="gunpla-news", help="Displays the latest Gunpla news.")
+    async def gunpla_news(self, ctx):
+        url = f'https://en.gundam.info/news/gunpla.html'
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        vertical_feed = soup.findAll(
+            "div", {'class': 'c-articleList__item--vertical'})
+        horizontal_feed = soup.findAll(
+            "div", {'class': 'c-articleList__item--horizontal'})
+        titles = soup.findAll("p", {'class': 'c-articleList__mainTitle'})
+        dates = soup.findAll("p", {'class': 'c-articleList__mainDate'})
+
+        gunpla_news_embed = discord.Embed(
+            title=f"LATEST GUNPLA NEWS",
+            url=url,
+            color=0xfccf00
+        )
+
+        for i in range(len(vertical_feed)):
+            title = titles[i].text
+            params = vertical_feed[i].find("a").attrs["href"]
+            value = f'[{title}](https://en.gundam.info{params})'
+            gunpla_news_embed.add_field(
+                name=dates[i].text,
+                value=value,
+                inline=False
+            )
+
+        for i in range(len(horizontal_feed)):
+            title = titles[i+len(vertical_feed)].text
+            params = horizontal_feed[i].find("a").attrs["href"]
+            value = f'[{title}](https://en.gundam.info{params})'
+            gunpla_news_embed.add_field(
+                name=dates[i+len(vertical_feed)].text,
+                value=value,
+                inline=False
+            )
+
+        await ctx.send(embed=gunpla_news_embed)
 
     @commands.Cog.listener(name=None)
     async def on_command_error(self, ctx, error):
