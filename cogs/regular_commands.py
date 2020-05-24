@@ -176,6 +176,34 @@ class RegularCommands(commands.Cog):
 
         await ctx.send(embed=gunpla_news_embed)
 
+    @commands.command(name="anime-news", help="Displays the latest anime news.")
+    async def anime_news(self, ctx):
+        url = f'https://myanimelist.net/news'
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        feed = soup.findAll("div", {'class': 'news-unit clearfix rect'})
+        times = soup.findAll("p", {'class': 'info di-ib'})
+
+        anime_news_embed = discord.Embed(
+            title=f"LATEST ANIME NEWS",
+            url=url,
+            color=0x2f52a2
+        )
+
+        length = min(len(feed), 10)
+
+        for i in range(length):
+            title = feed[i].find("p").text.strip('\n')
+            url = feed[i].find("a").attrs["href"]
+            value = f'[{title}]({url})'
+            anime_news_embed.add_field(
+                name=times[i].text.split(' by ')[0],
+                value=value,
+                inline=False
+            )
+
+        await ctx.send(embed=anime_news_embed)
+
     @commands.Cog.listener(name=None)
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.errors.CheckFailure):
