@@ -61,14 +61,14 @@ class RegularCommands(commands.Cog):
                         f'**Confirmed Deaths:** {deaths}\n\n'
                         f'**Recovered Cases:**  {recovered}\n\n',
             url=url,
-            color=0xb73131
+            color=0xa3da50
         )
         covid_embed.set_footer(text='This data is taken from Worldometers',
                                icon_url='https://www.worldometers.info/favicon/apple-icon-180x180.png')
 
         await ctx.send(embed=covid_embed)
 
-    @commands.command(name='covidnews', help='Displays COVID-19 news. (Mixed, BBC, or Reuters)')
+    @commands.command(name='covid-news', help='Displays COVID-19 news. (Mixed, BBC, or Reuters)')
     async def covid_news(self, ctx, source='mixed'):
 
         source = source.lower()
@@ -99,7 +99,7 @@ class RegularCommands(commands.Cog):
                 links.append(soup.findAll("div", {
                     'class': 'FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2'}))
             links = [item for item in links if item != []]
-            color = 0x0073b1
+            color = 0xd22188
         covid_news_embed = discord.Embed(
             title=f"COVID-19 {source.upper()} LIVE NEWS",
             url=url,
