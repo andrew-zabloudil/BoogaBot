@@ -13,8 +13,8 @@ from bot_commands import admin_commands
 from bot_commands import bot_listeners
 
 load_dotenv()
-# TOKEN = os.getenv('DISCORD_TOKEN')
-TOKEN = os.getenv('DISCORD_TEST_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN')
+# TOKEN = os.getenv('DISCORD_TEST_TOKEN')
 bot = commands.Bot(command_prefix='!')
 
 
