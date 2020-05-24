@@ -41,5 +41,5 @@ class BotListeners(commands.Cog):
             elif ''.join(message.content.lower().split(' ')) == reply_key:
                 await message.channel.send(replies[reply_key])
 
-        if ''.join(message.content.lower().split(' ')) == "animewasamistake":
+        if ''.join(message.content.lower().rstrip('.').split(' ')) == "animewasamistake":
             await message.channel.send(anime_replies[random.randrange(0, len(anime_replies))])
