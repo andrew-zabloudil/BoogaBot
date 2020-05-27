@@ -38,8 +38,11 @@ class AdminCommands(commands.Cog):
 
     @commands.command(name='ban', help='ADMIN: Bans the specified user.')
     @commands.has_permissions(ban_members=True)
-    async def ban_user(self, ctx, user_name=None, reason=None, days=None):
+    async def ban_user(self, ctx, user_name=None, reason=None, days=0):
         guild = ctx.guild
+
+        if days > 7:
+            days = 7
 
         if user_name:
             for member in guild.members:
