@@ -28,6 +28,15 @@ Admin Commands:
     !create-channel {channel-name}
         Creates a new text channel on the server with the specified channel name. 
         If no channel name is given, the new channel will be named "new-channel."
+    
+    !kick {user_name} {reason}
+        Kicks the specified user from the current server.
+        Reason is not a required field.
+    
+    !ban {user_name} {reason} {days}
+        Bans the specified user from the current server.
+        Reason is required if you wish to specify the number of days.
+        Days will delete all messages by the user from up to the last 7 days. Defaults to 1.
 
 Bot Listeners:
 
