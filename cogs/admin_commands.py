@@ -52,7 +52,6 @@ class AdminCommands(commands.Cog):
         if user_name:
             for member in guild.members:
                 if user_name == member.display_name:
-                    await member.ban(delete_message_days=days, reason=reason)
                     if reason:
                         await ctx.send(f'Banned {user_name} for {reason}.')
                         await member.create_dm()
@@ -61,6 +60,7 @@ class AdminCommands(commands.Cog):
                         await ctx.send(f'Banned {user_name}.')
                         await member.create_dm()
                         await member.dm_channel.send(f'You were banned from {guild.name}.')
+                    await member.ban(delete_message_days=days, reason=reason)
                     return
             await ctx.send('That user does not exist.')
         else:
