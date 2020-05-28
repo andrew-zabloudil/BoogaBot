@@ -39,7 +39,7 @@ class BotListeners(commands.Cog):
         ]
 
         for reply_key in replies:
-            if message.content.lower() == reply_key:
+            if message.content.lower().rstrip('.') == reply_key:
                 await message.channel.send(replies[reply_key])
             elif ''.join(message.content.lower().split(' ')) == reply_key:
                 await message.channel.send(replies[reply_key])
