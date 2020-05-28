@@ -32,6 +32,7 @@ class RegularCommands(commands.Cog):
     @commands.command(name="covid", help="Displays current COVID-19 data. Defaults to global, country can be specified.")
     async def covid_data(self, ctx, location=None):
 
+        # Adjusts the url to include the specified country, and includes some expected alternate inputs for the USA.
         if location:
             if location.lower() in ["america", "usa", "united states"]:
                 location = "us"
@@ -39,23 +40,25 @@ class RegularCommands(commands.Cog):
         else:
             url = "https://www.worldometers.info/coronavirus/"
 
+        # Requests the data from Worldometers.info and checks for a 404 redirect.
         r = requests.get(url)
-
         if r.url == "https://www.worldometers.info/404.shtml":
             await ctx.send("That is not a valid country.")
-
         soup = BeautifulSoup(r.text, "html.parser")
         numbers = soup.findAll("div", {"class": "maincounter-number"})
 
+        # Finds the numbers of Confirmed Cases, Confirmed Deaths, and Recovered Cases
         confirmed = numbers[0].find("span").text
         deaths = numbers[1].find("span").text
         recovered = numbers[2].find("span").text
 
+        # Determines the title of the embed.
         if location:
             title = f'CURRENT COVID-19 DATA FOR {location.upper()}'
         else:
             title = "CURRENT GLOBAL COVID-19 DATA"
 
+        # Builds the embed.
         covid_embed = discord.Embed(
             title=title,
             description=f'\n**Confirmed Cases:**  {confirmed}\n\n'
@@ -67,6 +70,7 @@ class RegularCommands(commands.Cog):
         covid_embed.set_footer(text="This data is taken from Worldometers",
                                icon_url="https://www.worldometers.info/favicon/apple-icon-180x180.png")
 
+        # Sends the fully built embed to Discord.
         await ctx.send(embed=covid_embed)
 
     @commands.command(name="covid-news", help="Displays COVID-19 news. (Mixed, BBC, Reuters, NPR, The Hill)")
@@ -175,6 +179,8 @@ class RegularCommands(commands.Cog):
 
     @commands.command(name="gunpla-news", help="Displays the latest Gunpla news.")
     async def gunpla_news(self, ctx):
+
+        # Requests the data from the Gundam.Info website
         url = f'https://en.gundam.info/news/gunpla.html'
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -185,12 +191,14 @@ class RegularCommands(commands.Cog):
         titles = soup.findAll("p", {"class": "c-articleList__mainTitle"})
         dates = soup.findAll("p", {"class": "c-articleList__mainDate"})
 
+        # Constructs the base embed.
         gunpla_news_embed = discord.Embed(
             title=f"LATEST GUNPLA NEWS",
             url=url,
             color=0xfccf00
         )
 
+        # Adds the articles from the feed of vertical cards to the embed.
         for i in range(len(vertical_feed)):
             title = titles[i].text
             params = vertical_feed[i].find("a").attrs["href"]
@@ -201,6 +209,7 @@ class RegularCommands(commands.Cog):
                 inline=False
             )
 
+        # Adds the articles from the feed of horizontal cards to the embed.
         for i in range(len(horizontal_feed)):
             title = titles[i+len(vertical_feed)].text
             params = horizontal_feed[i].find("a").attrs["href"]
@@ -211,25 +220,28 @@ class RegularCommands(commands.Cog):
                 inline=False
             )
 
+        # Sends the fully built embed to Discord.
         await ctx.send(embed=gunpla_news_embed)
 
     @commands.command(name="anime-news", help="Displays the latest anime news.")
     async def anime_news(self, ctx):
+
+        # Requests the news page from MyAnimeList
         url = f'https://myanimelist.net/news'
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
         feed = soup.findAll("div", {"class": "news-unit clearfix rect"})
         times = soup.findAll("p", {"class": "info di-ib"})
 
+        # Builds the base embed.
         anime_news_embed = discord.Embed(
             title=f"LATEST ANIME NEWS",
             url=url,
             color=0x2f52a2
         )
 
-        length = min(len(feed), 10)
-
-        for i in range(length):
+        # Adds the news articles to the embed, with a maximum limit of 10.
+        for i in range(min(len(feed), 10)):
             title = feed[i].find("p").text.strip("\n")
             url = feed[i].find("a").attrs["href"]
             value = f'[{title}]({url})'
@@ -239,6 +251,7 @@ class RegularCommands(commands.Cog):
                 inline=False
             )
 
+        # Sends the fully built embed to Discord.
         await ctx.send(embed=anime_news_embed)
 
     @commands.Cog.listener(name=None)
