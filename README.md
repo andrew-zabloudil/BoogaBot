@@ -32,11 +32,13 @@ Admin Commands:
     !kick {user_name} {reason}
         Kicks the specified user from the current server.
         Reason is not a required field.
+        Sends a DM to the kicked user telling them they were kicked, including the reason if specified.
     
     !ban {user_name} {reason} {days}
         Bans the specified user from the current server.
         Reason is required if you wish to specify the number of days.
         Days will delete all messages by the user from up to the last 7 days. Defaults to 1.
+        Sends a DM to the banned user telling them they were banned, including the reason if specified.
 
 Bot Listeners:
 

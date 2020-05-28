@@ -21,16 +21,21 @@ class AdminCommands(commands.Cog):
     @commands.command(name='kick', help='ADMIN: Kicks the specified user.')
     @commands.has_permissions(kick_members=True)
     async def kick_user(self, ctx, user_name=None, reason=None):
+
         guild = ctx.guild
 
         if user_name:
             for member in guild.members:
                 if user_name == member.display_name:
-                    await member.kick(reason=reason)
                     if reason:
                         await ctx.send(f'Kicked {user_name} for {reason}.')
+                        await member.create_dm()
+                        await member.dm_channel.send(f'You were kicked from {guild.name} for {reason}.')
                     else:
                         await ctx.send(f'Kicked {user_name}.')
+                        await member.create_dm()
+                        await member.dm_channel.send(f'You were kicked from {guild.name}.')
+                    await member.kick(reason=reason)
                     return
             await ctx.send('That user does not exist.')
         else:
@@ -47,11 +52,15 @@ class AdminCommands(commands.Cog):
         if user_name:
             for member in guild.members:
                 if user_name == member.display_name:
-                    await member.ban(reason=reason, delete_message_days=days)
+                    await member.ban(delete_message_days=days, reason=reason)
                     if reason:
                         await ctx.send(f'Banned {user_name} for {reason}.')
+                        await member.create_dm()
+                        await member.dm_channel.send(f'You were banned from {guild.name} for {reason}.')
                     else:
                         await ctx.send(f'Banned {user_name}.')
+                        await member.create_dm()
+                        await member.dm_channel.send(f'You were banned from {guild.name}.')
                     return
             await ctx.send('That user does not exist.')
         else:
