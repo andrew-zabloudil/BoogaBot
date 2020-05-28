@@ -14,41 +14,41 @@ class RegularCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='roll_dice', help='Simulates rolling dice.')
+    @commands.command(name="roll_dice", help="Simulates rolling dice.")
     async def roll(self, ctx, number_of_dice: int, number_of_sides: int):
         dice = [
             str(random.choice(range(1, number_of_sides + 1)))
             for _ in range(number_of_dice)
         ]
-        await ctx.send(', '.join(dice))
+        await ctx.send(", ".join(dice))
 
-    @commands.command(name='wikirandom', help='Posts a random wikipedia page.')
+    @commands.command(name="wikirandom", help="Posts a random wikipedia page.")
     async def random_wiki(self, ctx):
         r = requests.head(
-            'https://en.wikipedia.org/wiki/Special:Random', allow_redirects=True)
-        await ctx.send(urllib.parse.unquote(r.url, encoding='utf-8'))
+            "https://en.wikipedia.org/wiki/Special:Random", allow_redirects=True)
+        await ctx.send(urllib.parse.unquote(r.url, encoding="utf-8"))
 
-    @commands.command(name="covid", help='Displays current COVID-19 data. Defaults to global, country can be specified.')
+    @commands.command(name="covid", help="Displays current COVID-19 data. Defaults to global, country can be specified.")
     async def covid_data(self, ctx, location=None):
 
         if location:
-            if location.lower() in ['america', 'usa', 'united states']:
-                location = 'us'
+            if location.lower() in ["america", "usa", "united states"]:
+                location = "us"
             url = f'https://www.worldometers.info/coronavirus/country/{location.lower()}'
         else:
-            url = 'https://www.worldometers.info/coronavirus/'
+            url = "https://www.worldometers.info/coronavirus/"
 
         r = requests.get(url)
 
-        if r.url == 'https://www.worldometers.info/404.shtml':
+        if r.url == "https://www.worldometers.info/404.shtml":
             await ctx.send("That is not a valid country.")
 
-        soup = BeautifulSoup(r.text, 'html.parser')
-        numbers = soup.findAll("div", {'class': 'maincounter-number'})
+        soup = BeautifulSoup(r.text, "html.parser")
+        numbers = soup.findAll("div", {"class": "maincounter-number"})
 
-        confirmed = numbers[0].find('span').text
-        deaths = numbers[1].find('span').text
-        recovered = numbers[2].find('span').text
+        confirmed = numbers[0].find("span").text
+        deaths = numbers[1].find("span").text
+        recovered = numbers[2].find("span").text
 
         if location:
             title = f'CURRENT COVID-19 DATA FOR {location.upper()}'
@@ -63,58 +63,75 @@ class RegularCommands(commands.Cog):
             url=url,
             color=0xa3da50
         )
-        covid_embed.set_footer(text='This data is taken from Worldometers',
-                               icon_url='https://www.worldometers.info/favicon/apple-icon-180x180.png')
+        covid_embed.set_footer(text="This data is taken from Worldometers",
+                               icon_url="https://www.worldometers.info/favicon/apple-icon-180x180.png")
 
         await ctx.send(embed=covid_embed)
 
-    @commands.command(name='covid-news', help='Displays COVID-19 news. (Mixed, BBC, or Reuters)')
-    async def covid_news(self, ctx, source='mixed'):
+    @commands.command(name="covid-news", help="Displays COVID-19 news. (Mixed, BBC, or Reuters)")
+    async def covid_news(self, ctx, source="mixed"):
 
         source = source.lower()
+        names = {
+            "bbc": "BBC",
+            "reuters": "Reuters",
+            "npr": "NPR"
+        }
+        urls = {
+            "bbc": "https://www.bbc.com/news/coronavirus",
+            "reuters": "https://www.reuters.com/live-events/coronavirus-6-id2921484",
+            "npr": "https://www.npr.org/sections/coronavirus-live-updates"
+        }
+        html_tags = {
+            "bbc": ("a", {"class": "qa-heading-link"}),
+            "reuters": ("div", {"class": "FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2"}),
+            "npr": ("div", {"class": "item-info"})
+        }
 
-        if source == 'bbc':
-            url = 'https://www.bbc.com/news/coronavirus'
-            r = requests.get(url)
-            soup = BeautifulSoup(r.text, 'html.parser')
-            links = soup.findAll("a", {'class': 'qa-heading-link'})
-            color = 0xbb1919
+        # html_tags = {
+        #     "bbc": ("a", {"class": "qa-heading-link"}),
+        #     "reuters": ("div", {
+        #         "class": "FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2"}),
+        #     "npr": ("div", {"class": "item-info"})
+        # }
+        colors = {
+            "bbc": 0xbb1919,
+            "reuters": 0xfb8033,
+            "npr": 0x237bbd
+        }
 
-        elif source == 'reuters':
-            url = 'https://www.reuters.com/live-events/coronavirus-6-id2921484'
-            r = requests.get(url)
-            soup = BeautifulSoup(r.text, 'html.parser')
-            links = soup.findAll("div", {
-                                 'class': 'FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2'})
-            color = 0xfb8033
-
-        elif source == 'mixed':
-            urls = ['https://www.bbc.com/news/coronavirus',
-                    'https://www.reuters.com/live-events/coronavirus-6-id2921484']
-            links = []
-            for url in urls:
-                r = requests.get(url)
-                soup = BeautifulSoup(r.text, 'html.parser')
-                links.append(soup.findAll("a", {'class': 'qa-heading-link'}))
-                links.append(soup.findAll("div", {
-                    'class': 'FeedBox__container___3wxiT item-container LiveBlogStreamPage-post-3KSe2'}))
-            links = [item for item in links if item != []]
+        if source == "mixed":
+            links = {}
+            for site in urls:
+                r = requests.get(urls[site])
+                soup = BeautifulSoup(r.text, "html.parser")
+                links[site] = soup.findAll(
+                    html_tags[site][0], html_tags[site][1])
             color = 0xd22188
+
+        else:
+            url = urls[source]
+            r = requests.get(url)
+            soup = BeautifulSoup(r.text, "html.parser")
+            links = soup.findAll(html_tags[source][0], html_tags[source][1])
+            color = colors[source]
+
         covid_news_embed = discord.Embed(
             title=f"COVID-19 {source.upper()} LIVE NEWS",
-            url=url,
             color=color
         )
 
-        if source == 'bbc' or source == 'reuters':
-            for i in range(len(links)):
-                if source == 'bbc':
-                    name = 'BBC'
-                    value = f'[{links[i].find("span").text}](https://www.bbc.com{links[i].attrs["href"]})'
-
-                elif source == 'reuters':
-                    name = 'Reuters'
-                    value = f'[{links[i].find("a").text}]({links[i].find("a").attrs["href"]})'
+        if source != "mixed":
+            for i in range(min(10, len(links))):
+                try:
+                    if source == "bbc":
+                        name = names[source]
+                        value = f'[{links[i].find("span").text}](https://www.bbc.com{links[i].attrs["href"]})'
+                    else:
+                        name = names[source]
+                        value = f'[{links[i].find("a").text}]({links[i].find("a").attrs["href"]})'
+                except:
+                    continue
 
                 covid_news_embed.add_field(
                     name=name,
@@ -123,17 +140,24 @@ class RegularCommands(commands.Cog):
                 )
 
         if source == "mixed":
-            for i in range(0, 5):
-                covid_news_embed.add_field(
-                    name='BBC',
-                    value=f'[{links[0][i].find("span").text}](https://www.bbc.com{links[0][i].attrs["href"]})',
-                    inline=False
-                )
-                covid_news_embed.add_field(
-                    name='Reuters',
-                    value=f'[{links[1][i].find("a").text}]({links[1][i].find("a").attrs["href"]})',
-                    inline=False
-                )
+            for i in range(int(10 / len(urls))):
+                for site in names:
+                    try:
+                        if site == "bbc":
+                            covid_news_embed.add_field(
+                                name=names[site],
+                                value=f'[{links[site][i].find("span").text}](https://www.bbc.com{links[site][i].attrs["href"]})',
+                                inline=False
+                            )
+                        else:
+                            covid_news_embed.add_field(
+                                name=names[site],
+                                value=f'[{links[site][i].find("a").text}]({links[site][i].find("a").attrs["href"]})',
+                                inline=False
+                            )
+                    except:
+                        continue
+
         await ctx.send(embed=covid_news_embed)
 
     @commands.command(name="gunpla-news", help="Displays the latest Gunpla news.")
@@ -142,11 +166,11 @@ class RegularCommands(commands.Cog):
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
         vertical_feed = soup.findAll(
-            "div", {'class': 'c-articleList__item--vertical'})
+            "div", {"class": "c-articleList__item--vertical"})
         horizontal_feed = soup.findAll(
-            "div", {'class': 'c-articleList__item--horizontal'})
-        titles = soup.findAll("p", {'class': 'c-articleList__mainTitle'})
-        dates = soup.findAll("p", {'class': 'c-articleList__mainDate'})
+            "div", {"class": "c-articleList__item--horizontal"})
+        titles = soup.findAll("p", {"class": "c-articleList__mainTitle"})
+        dates = soup.findAll("p", {"class": "c-articleList__mainDate"})
 
         gunpla_news_embed = discord.Embed(
             title=f"LATEST GUNPLA NEWS",
@@ -181,8 +205,8 @@ class RegularCommands(commands.Cog):
         url = f'https://myanimelist.net/news'
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
-        feed = soup.findAll("div", {'class': 'news-unit clearfix rect'})
-        times = soup.findAll("p", {'class': 'info di-ib'})
+        feed = soup.findAll("div", {"class": "news-unit clearfix rect"})
+        times = soup.findAll("p", {"class": "info di-ib"})
 
         anime_news_embed = discord.Embed(
             title=f"LATEST ANIME NEWS",
@@ -193,11 +217,11 @@ class RegularCommands(commands.Cog):
         length = min(len(feed), 10)
 
         for i in range(length):
-            title = feed[i].find("p").text.strip('\n')
+            title = feed[i].find("p").text.strip("\n")
             url = feed[i].find("a").attrs["href"]
             value = f'[{title}]({url})'
             anime_news_embed.add_field(
-                name=times[i].text.split(' by ')[0],
+                name=times[i].text.split(" by ")[0],
                 value=value,
                 inline=False
             )
@@ -207,4 +231,4 @@ class RegularCommands(commands.Cog):
     @commands.Cog.listener(name=None)
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send('You do not have the correct role for this command.')
+            await ctx.send("You do not have the correct role for this command.")

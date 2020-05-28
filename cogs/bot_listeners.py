@@ -18,6 +18,9 @@ class BotListeners(commands.Cog):
         if message.author == self.bot.user:
             return
 
+        if message.content.startswith("!"):
+            return
+
         replies = {
             'ooga': 'Booga',
             'epic': 'WOW',
