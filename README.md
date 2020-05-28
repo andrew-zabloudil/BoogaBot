@@ -8,7 +8,7 @@ Regular Commands:
     
     !covid-news {source}
         Displays news articles from a Coronavirus live update feed of the specified source. 
-        Currently supported sources are BBC, Reuters, and a mixed feed of the two. 
+        Currently supported sources are BBC, Reuters, NPR, The Hill and a mixed feed of all sources. 
         If no source is specified, it will give the mixed feed by default.
 
     !gunpla-news
