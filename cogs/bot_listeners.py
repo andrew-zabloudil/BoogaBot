@@ -39,10 +39,10 @@ class BotListeners(commands.Cog):
         ]
 
         for reply_key in replies:
-            if message.content.lower().rstrip('.') == reply_key:
+            if message.content.lower().strip('.?!') == reply_key:
                 await message.channel.send(replies[reply_key])
             elif ''.join(message.content.lower().split(' ')) == reply_key:
                 await message.channel.send(replies[reply_key])
 
-        if ''.join(message.content.lower().rstrip('.').split(' ')) == "animewasamistake":
+        if ''.join(message.content.lower().strip('.?!').split(' ')) == "animewasamistake":
             await message.channel.send(anime_replies[random.randrange(0, len(anime_replies))])
