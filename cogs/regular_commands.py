@@ -15,6 +15,10 @@ class RegularCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name="cryle-busch", help="Sends a fake crying Kyle Busch gif.")
+    async def cryle_busch(self, ctx):
+        await ctx.send("https://tenor.com/view/nascar-cry-kyle-busch-chicagoland-gif-12099166")
+
     @commands.command(name="roll_dice", help="Simulates rolling dice.")
     async def roll(self, ctx, number_of_dice: int, number_of_sides: int):
         dice = [
