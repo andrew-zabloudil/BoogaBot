@@ -26,7 +26,7 @@ class BotListeners(commands.Cog):
             'epic': 'WOW',
             'oof': 'Thanks for contributing nothing to the conversation.',
             'wow': 'EPIC',
-            '🐡': 'AUGH'
+            '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792'
         }
 
         anime_replies = [
