@@ -26,7 +26,9 @@ class BotListeners(commands.Cog):
             'epic': 'WOW',
             'oof': 'Thanks for contributing nothing to the conversation.',
             'wow': 'EPIC',
-            '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792'
+            '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792',
+            '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
+            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792'
         }
 
         anime_replies = [
