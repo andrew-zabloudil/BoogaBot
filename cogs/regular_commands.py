@@ -36,11 +36,27 @@ class RegularCommands(commands.Cog):
     @commands.command(name="covid", help="Displays current COVID-19 data. Defaults to global, country can be specified.")
     async def covid_data(self, ctx, location=None):
 
+        location = '-'.join(location.lower().split(" "))
+
         # Adjusts the url to include the specified country, and includes some expected alternate inputs for the USA.
         if location:
-            if location.lower() in ["america", "usa", "united states"]:
+            if location in ["america", "usa", "united-states"]:
                 location = "us"
-            url = f'https://www.worldometers.info/coronavirus/country/{location.lower()}'
+            elif location in ["uk", "united-kingdom"]:
+                location = "uk"
+            elif location in ["uae", "united-arab-emirates"]:
+                location = "united-arab-emirates"
+            elif location in ["drc", "dr-congo", "democratic-republic-of-the-congo", "democratic-republic-of-congo"]:
+                location = "democratic-republic-of-the-congo"
+            elif location in ["hong-kong", "hong-kong-sar", "china-hong-kong-sar"]:
+                location = "china-hong-kong-sar"
+            elif location in ["macao", "china-macao-sar"]:
+                location = "china-macao-sar"
+            elif location in ["falkland-islands", "falkland-islands", "malvinas", "falkland-islands-malvinas"]:
+                location = "falkland-island-malvinas"
+            elif location == "vietnam":
+                location = "viet-nam"
+            url = f'https://www.worldometers.info/coronavirus/country/{location}'
         else:
             url = "https://www.worldometers.info/coronavirus/"
 
@@ -58,6 +74,7 @@ class RegularCommands(commands.Cog):
 
         # Determines the title of the embed.
         if location:
+            location = " ".join(location.split("-"))
             title = f'CURRENT COVID-19 DATA FOR {location.upper()}'
         else:
             title = "CURRENT GLOBAL COVID-19 DATA"
