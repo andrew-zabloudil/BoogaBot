@@ -36,10 +36,9 @@ class RegularCommands(commands.Cog):
     @commands.command(name="covid", help="Displays current COVID-19 data. Defaults to global, country can be specified.")
     async def covid_data(self, ctx, location=None):
 
-        location = '-'.join(location.lower().split(" "))
-
         # Adjusts the url to include the specified country, and includes some expected alternate inputs for the USA.
         if location:
+            location = '-'.join(location.lower().split(" "))
             if location in ["america", "usa", "united-states"]:
                 location = "us"
             elif location in ["uk", "united-kingdom"]:
