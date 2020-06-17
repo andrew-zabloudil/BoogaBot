@@ -88,3 +88,26 @@ class ModCommands(commands.Cog):
 
             else:
                 await ctx.send('One or more inputs was invalid.')
+
+    @commands.command(name="remove-role", help="MOD: Give a user and a role to remove from them.")
+    @commands.has_permissions(manage_roles=True)
+    async def remove_role(self, ctx, user_name=None, new_role=None, reason=None):
+        if not user_name or not new_role:
+            await ctx.send('You must input both a user and a role to assign.')
+
+        else:
+            guild = ctx.guild
+            role = [r for r in guild.roles if r.name == new_role]
+            member = [m for m in guild.members if m.display_name == user_name]
+            if role and member:
+                role = role[0]
+                member = member[0]
+                await member.remove_roles(role, reason=reason)
+
+                if not reason:
+                    await ctx.send(f'The role {role.name} has been removed from {member.display_name}')
+                else:
+                    await ctx.send(f'The role {role.name} has been removed from {member.display_name} because {reason}.')
+
+            else:
+                await ctx.send('One or more inputs was invalid.')
