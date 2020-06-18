@@ -41,5 +41,5 @@ class BotListeners(commands.Cog):
 
         clean_message = ''.join(
             message.content.lower().strip('.?!¡¿').split(' '))
-        if replies[clean_message]:
+        if clean_message in replies:
             await message.channel.send(replies[clean_message])
