@@ -15,23 +15,10 @@ class BotListeners(commands.Cog):
 
     @commands.Cog.listener(name=None)
     async def on_message(self, message):
-        if message.author == self.bot.user:
+        if message.author == self.bot.user or message.content.startswith("!"):
             return
 
-        if message.content.startswith("!"):
-            return
-
-        replies = {
-            'ooga': 'Booga',
-            'epic': 'WOW',
-            'oof': 'Thanks for contributing nothing to the conversation.',
-            'wow': 'EPIC',
-            '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792',
-            '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
-            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792'
-        }
-
-        anime_replies = [
+        anime_gifs = [
             "https://tenor.com/view/really-anime-seriously-kiruya-momochi-karyl-anime-faces-gif-17024702",
             "https://tenor.com/view/cal-princess-connect-disgusting-cry-gif-16950076",
             "https://tenor.com/view/princess-connect-re-dive-anime-smile-thumbs-up-gif-17119800",
@@ -41,11 +28,18 @@ class BotListeners(commands.Cog):
             "https://tenor.com/view/karyl-kyaru-princess-connect-re-dive-anime-gif-16984575"
         ]
 
-        for reply_key in replies:
-            if message.content.lower().strip('.?!¡¿') == reply_key:
-                await message.channel.send(replies[reply_key])
-            elif ''.join(message.content.lower().split(' ')) == reply_key:
-                await message.channel.send(replies[reply_key])
+        replies = {
+            'ooga': 'Booga',
+            'epic': 'WOW',
+            'oof': 'Thanks for contributing nothing to the conversation.',
+            'wow': 'EPIC',
+            'animewasamistake': anime_gifs[random.randrange(0, len(anime_gifs))],
+            '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792',
+            '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
+            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792'
+        }
 
-        if ''.join(message.content.lower().strip('.?!¡¿').split(' ')) == "animewasamistake":
-            await message.channel.send(anime_replies[random.randrange(0, len(anime_replies))])
+        clean_message = ''.join(
+            message.content.lower().strip('.?!¡¿').split(' '))
+        if replies[clean_message]:
+            await message.channel.send(replies[clean_message])
