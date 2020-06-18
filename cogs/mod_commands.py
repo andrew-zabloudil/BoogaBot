@@ -96,9 +96,8 @@ class ModCommands(commands.Cog):
             await ctx.send('You must input both a user and a role to assign.')
 
         else:
-            guild = ctx.guild
-            role = [r for r in guild.roles if r.name == new_role]
-            member = [m for m in guild.members if m.display_name == user_name]
+            role = [r for r in ctx.guild.roles if r.name == new_role]
+            member = [m for m in ctx.guild.members if m.display_name == user_name]
             if role and member:
                 role = role[0]
                 member = member[0]
