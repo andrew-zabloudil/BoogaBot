@@ -36,7 +36,8 @@ class BotListeners(commands.Cog):
             'animewasamistake': anime_gifs[random.randrange(0, len(anime_gifs))],
             '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792',
             '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
-            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792'
+            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
+            'f': f'{message.author.display_name} has paid respects.'
         }
 
         clean_message = ''.join(
