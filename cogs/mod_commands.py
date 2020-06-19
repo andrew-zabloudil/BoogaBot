@@ -110,3 +110,8 @@ class ModCommands(commands.Cog):
 
             else:
                 await ctx.send('One or more inputs was invalid.')
+
+    @commands.Cog.listener(name=None)
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("You do not have the correct role for this command.")
