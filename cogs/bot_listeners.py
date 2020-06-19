@@ -37,6 +37,7 @@ class BotListeners(commands.Cog):
             '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792',
             '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
             '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
+            '🧀': 'https://cdn.discordapp.com/emojis/716293527054843914.gif',
             'f': f'{message.author.display_name} has paid respects.'
         }
 
