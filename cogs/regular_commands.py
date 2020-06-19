@@ -278,8 +278,3 @@ class RegularCommands(commands.Cog):
 
             # Sends the fully built embed to Discord.
             await ctx.send(embed=anime_news_embed)
-
-    @commands.Cog.listener(name=None)
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("You do not have the correct role for this command.")
