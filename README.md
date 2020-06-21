@@ -1,5 +1,7 @@
 This is a Discord bot made as a personal project.
 
+Commands can be invoked either with the ! prefix or by mentioning BoogaBot with @BoogaBot
+
 Regular Commands:
 
     !covid {country}
@@ -26,6 +28,9 @@ Regular Commands:
     !cryle-busch
         Sends a gif of Kyle Busch fake crying.
 
+    !dad-joke "input seed"
+        Uses machine learning to generate a dad joke from the input seed.
+
 Admin Commands:
 
     !create-channel {channel-name}
@@ -43,6 +48,12 @@ Admin Commands:
         Days will delete all messages by the user from up to the last 7 days. Defaults to 1.
         Sends a DM to the banned user telling them they were banned, including the reason if specified.
 
+    !add-role {user_name} {role_name} {reason}
+        Adds the specified role to the specified user. Reason is optional.
+
+    !remove-role {user_name} {role_name} {reason}
+        Removes the specified role from the specified user. Reason is optional.
+
 Bot Listeners:
 
     on_message:
@@ -53,9 +64,13 @@ Bot Listeners:
             'epic': 'WOW',
             'oof': 'Thanks for contributing nothing to the conversation.',
             'wow': 'EPIC',
+            'animewasamistake': send a random anime gif,
             '🐡': 'https://tenor.com/view/pufferfish-carrot-meme-stfu-funny-gif-15837792',
             '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
-            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792'
+            '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
+            '🧀': 'https://cdn.discordapp.com/emojis/716293527054843914.gif',
+            '🧅': 'https://tenor.com/view/shrek-surprise-bathroom-ogre-gif-11492547',
+            'f': f'{message.author.display_name} has paid respects.'
         }
 
         Responds to the phrase "Anime was a mistake" with a random anime gif.
