@@ -5,8 +5,6 @@ import numpy as np
 import discord
 from discord.ext import commands
 
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], enable=True)
 
 char2idx = {
     '\n': 0, '\r': 1, ' ': 2, '!': 3, '"': 4, '#': 5, '$': 6, '%': 7,
@@ -44,7 +42,7 @@ class Dadbot(commands.Cog):
     @commands.command(name="dad-joke", help="Generates a dad joke from a seed input")
     async def dad_joke(self, ctx, seed="how"):
         async with ctx.typing():
-            await ctx.send(generate_text(self.model, char2idx, idx2char, start_string=seed))
+            await ctx.send(f'{ctx.author.mention} {generate_text(self.model, char2idx, idx2char, start_string=seed)}')
 
 
 def loss(labels, logits):
