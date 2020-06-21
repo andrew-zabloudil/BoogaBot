@@ -46,5 +46,3 @@ class BotListeners(commands.Cog):
             message.content.lower().strip('.?!¡¿').split(' '))
         if clean_message in replies:
             await message.channel.send(replies[clean_message])
-
-        await self.bot.process_commands(message)
