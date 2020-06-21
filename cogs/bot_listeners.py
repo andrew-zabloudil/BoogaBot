@@ -38,6 +38,7 @@ class BotListeners(commands.Cog):
             '🐇': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
             '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
             '🧀': 'https://cdn.discordapp.com/emojis/716293527054843914.gif',
+            '🧅': 'https://tenor.com/view/shrek-surprise-bathroom-ogre-gif-11492547',
             'f': f'{message.author.display_name} has paid respects.'
         }
 
@@ -45,3 +46,5 @@ class BotListeners(commands.Cog):
             message.content.lower().strip('.?!¡¿').split(' '))
         if clean_message in replies:
             await message.channel.send(replies[clean_message])
+
+        await self.bot.process_commands(message)
