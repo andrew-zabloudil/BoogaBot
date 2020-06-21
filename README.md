@@ -58,7 +58,7 @@ Bot Listeners:
 
     on_message:
         Uses a dictionary of messages and replies to automatically respond to certain phrases with a given reply.
-        (Only works if the message contains nothing but the key message, case insensitive.)
+        (Only works if the message contains nothing but the key message and the characters [.?!¡¿], case insensitive.)
         {
             'ooga': 'Booga',
             'epic': 'WOW',
@@ -72,6 +72,3 @@ Bot Listeners:
             '🧅': 'https://tenor.com/view/shrek-surprise-bathroom-ogre-gif-11492547',
             'f': f'{message.author.display_name} has paid respects.'
         }
-
-        Responds to the phrase "Anime was a mistake" with a random anime gif.
-        (Case insensitive, works regardless of a period at the end or spacing in the middle.))
