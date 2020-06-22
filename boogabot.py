@@ -1,7 +1,6 @@
 #! python3
 
 import os
-from dotenv import load_dotenv
 
 import discord
 from discord.ext import commands
@@ -11,7 +10,6 @@ from cogs.mod_commands import ModCommands
 from cogs.bot_listeners import BotListeners
 from cogs.dadbot import Dadbot
 
-load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix=commands.when_mentioned_or('!'))
 
