@@ -14,6 +14,9 @@ class BotListeners(commands.Cog):
 
     @commands.Cog.listener(name=None)
     async def on_message(self, message):
+        """
+        Automatically replies to certain messages.
+        """
         if message.author == self.bot.user or message.content.startswith("!"):
             return
 

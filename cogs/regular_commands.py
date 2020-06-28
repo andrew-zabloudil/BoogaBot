@@ -8,51 +8,93 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from discord.ext import commands
 
+"""
+This file contains the regular commands for BoogaBot,
+which will be usable by any users regardless of their roles.
+"""
 
-# Regular commands
+
 class RegularCommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="cryle-busch", help="Sends a fake crying Kyle Busch gif.")
+    @commands.command(
+        name="cryle-busch",
+        help="Sends a fake crying Kyle Busch gif."
+    )
     async def cryle_busch(self, ctx):
-        await ctx.send("https://tenor.com/view/nascar-cry-kyle-busch-chicagoland-gif-12099166")
+        """
+        Sends a gif of Kyle Busch pretending to cry.
+        """
 
-    @commands.command(name="roll_dice", help="Simulates rolling dice.")
+        await ctx.send('''https://tenor.com/view/
+                            nascar-cry-kyle-busch-chicagoland-gif-12099166''')
+
+    @commands.command(
+        name="roll_dice",
+        help="Simulates rolling dice."
+    )
     async def roll(self, ctx, number_of_dice: int, number_of_sides: int):
+        """
+        Takes a number of dice and a number of sides as arguments
+        and simulates rolling the dice.
+        """
         dice = [
             str(random.choice(range(1, number_of_sides + 1)))
             for _ in range(number_of_dice)
         ]
         await ctx.send(", ".join(dice))
 
-    @commands.command(name="wikirandom", help="Posts a random wikipedia page.")
+    @commands.command(
+        name="wikirandom",
+        help="Posts a random wikipedia page."
+    )
     async def random_wiki(self, ctx):
+        """
+        Sends a random wikipedia article.
+        """
         r = requests.head(
-            "https://en.wikipedia.org/wiki/Special:Random", allow_redirects=True)
+            "https://en.wikipedia.org/wiki/Special:Random",
+            allow_redirects=True
+        )
         await ctx.send(urllib.parse.unquote(r.url, encoding="utf-8"))
 
-    @commands.command(name="covid", help="Displays current COVID-19 data. Defaults to global, country can be specified.")
+    @commands.command(
+        name="covid",
+        help="Displays current COVID-19 data for a country. (Default: Global)"
+    )
     async def covid_data(self, ctx, location=None):
-
+        """
+        Gathers COVID-19 case and death numbers by scraping Worldometers.info
+        """
         async with ctx.typing():
-            # Adjusts the url to include the specified country, and includes some expected alternate inputs for the USA.
+            # Adjusts the url to include the specified country
             if location:
                 location = '-'.join(location.lower().split(" "))
                 if location in ["america", "usa", "united-states"]:
                     location = "us"
-                elif location in ["uk", "united-kingdom"]:
+                elif location in ["uk",
+                                  "united-kingdom"]:
                     location = "uk"
-                elif location in ["uae", "united-arab-emirates"]:
+                elif location in ["uae",
+                                  "united-arab-emirates"]:
                     location = "united-arab-emirates"
-                elif location in ["drc", "dr-congo", "democratic-republic-of-the-congo", "democratic-republic-of-congo"]:
+                elif location in ["drc",
+                                  "dr-congo",
+                                  "democratic-republic-of-the-congo",
+                                  "democratic-republic-of-congo"]:
                     location = "democratic-republic-of-the-congo"
-                elif location in ["hong-kong", "hong-kong-sar", "china-hong-kong-sar"]:
+                elif location in ["hong-kong",
+                                  "hong-kong-sar",
+                                  "china-hong-kong-sar"]:
                     location = "china-hong-kong-sar"
                 elif location in ["macao", "china-macao-sar"]:
                     location = "china-macao-sar"
-                elif location in ["falkland-islands", "falkland-islands", "malvinas", "falkland-islands-malvinas"]:
+                elif location in ["falkland-islands",
+                                  "falkland-islands",
+                                  "malvinas",
+                                  "falkland-islands-malvinas"]:
                     location = "falkland-island-malvinas"
                 elif location == "vietnam":
                     location = "viet-nam"
@@ -96,7 +138,11 @@ class RegularCommands(commands.Cog):
 
     @commands.command(name="covid-news", help="Displays COVID-19 news. (Mixed, BBC, Reuters, NPR, The Hill)")
     async def covid_news(self, ctx, source="mixed"):
-
+        """
+        Scrapes news sources for the latest COVID-19 related news. Can scrape from BBC, Reuters, NPR, The Hill.
+        If no source is specified, it will take a mixture of the latest articles from all four sources.
+        Returns the articles in a Discord embed.
+        """
         async with ctx.typing():
             # Checks the source against the dictionaries for expected misspellings, etc.
             source = source.lower()
@@ -202,7 +248,10 @@ class RegularCommands(commands.Cog):
 
     @commands.command(name="gunpla-news", help="Displays the latest Gunpla news.")
     async def gunpla_news(self, ctx):
-
+        """
+        Scrapes the Gundam.Info gunpla news page and returns the latest articles
+        as a Discord embed.
+        """
         async with ctx.typing():
             # Requests the data from the Gundam.Info website
             url = f'https://en.gundam.info/news/gunpla.html'
@@ -249,7 +298,10 @@ class RegularCommands(commands.Cog):
 
     @commands.command(name="anime-news", help="Displays the latest anime news.")
     async def anime_news(self, ctx):
-
+        """
+        Scrapes the MyAnimeList anime news page and returns the latest articles
+        as a Discord embed.
+        """
         async with ctx.typing():
             # Requests the news page from MyAnimeList
             url = f'https://myanimelist.net/news'

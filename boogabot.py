@@ -1,5 +1,8 @@
 #! python3
-
+"""
+This file creates the bot item for BoogaBot.
+All commands are located in the files found in the cogs folder.
+"""
 import os
 import discord
 from discord.ext import commands
