@@ -1,3 +1,4 @@
+import os
 import random
 import discord
 from discord.ext import commands
@@ -11,6 +12,24 @@ class BotListeners(commands.Cog):
     @commands.Cog.listener(name=None)
     async def on_ready(self):
         print(f'{self.bot.user.name} has connected to Discord!')
+        try:
+            with open('change_log.txt', 'r') as change_log:
+                changes = change_log.read()
+            for guild in self.bot.guilds:
+                for channel in guild.text_channels:
+                    if channel.name == "boogabot-updates":
+                        await channel.send(changes)
+            try:
+                with open('change_log_history.txt', 'a') as history:
+                    history.write(f'{changes}\n\n')
+                with open('change_log.txt', 'w') as change_log:
+                    change_log.write('')
+            except:
+                os.rename('change_log.txt', 'change_log_history.txt')
+                with open('change_log.txt', 'w') as change_log:
+                    change_log.write('')
+        except:
+            pass
 
     @commands.Cog.listener(name=None)
     async def on_message(self, message):
