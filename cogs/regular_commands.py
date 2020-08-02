@@ -28,8 +28,7 @@ class RegularCommands(commands.Cog):
         Sends a gif of Kyle Busch pretending to cry.
         """
 
-        await ctx.send('''https://tenor.com/view/
-                            nascar-cry-kyle-busch-chicagoland-gif-12099166''')
+        await ctx.send('https://tenor.com/view/nascar-cry-kyle-busch-chicagoland-gif-12099166')
 
     @commands.command(
         name="roll_dice",
