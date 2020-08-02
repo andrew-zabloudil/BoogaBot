@@ -31,7 +31,7 @@ Regular Commands:
 
     !dad-joke "input seed"
         Uses machine learning to generate a dad joke from the input seed.
-    NOTE: This command is currently not available in the master branch due to hosting limitations.
+    NOTE: This command is currently only available in the dad_bot_complete branch due to hosting limitations.
 
 Admin Commands:
 
