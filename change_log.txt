@@ -1,8 +1,0 @@
-__**BoogaBot 2.1 has been deployed.**__
-
-**Changes:**
-BoogaBot can now post its own updates written in a changelog file as long as there's a text channel named boogabot-updates.
-
-
-**Fixes:**
-Fixed issue with cryle-busch command not sending the tenor link properly.
