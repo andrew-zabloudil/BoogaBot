@@ -110,7 +110,7 @@ class ModCommands(commands.Cog):
         Removes a role from a user.
         """
         if not user_name or not new_role:
-            await ctx.send('You must input both a user and a role to assign.')
+            await ctx.send('You must input both a user and a role to remove.')
 
         else:
             role = [r for r in ctx.guild.roles if r.name == new_role]
