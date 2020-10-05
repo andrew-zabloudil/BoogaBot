@@ -19,3 +19,5 @@ bot.add_cog(BotListeners(bot))
 bot.add_cog(Dadbot(bot))
 
 bot.run(TOKEN)
+
+# Test comment is being added.
