@@ -61,7 +61,7 @@ class BotListeners(commands.Cog):
             '🧀': 'https://cdn.discordapp.com/emojis/716293527054843914.gif',
             '🧅': 'https://tenor.com/view/shrek-surprise-bathroom-ogre-gif-11492547',
             'f': f'{message.author.display_name} has paid respects.',
-            'uhoh': 'Stinky.'
+            'uhoh': 'Stinky'
         }
 
         clean_message = ''.join(
