@@ -60,10 +60,11 @@ class BotListeners(commands.Cog):
             '🐰': 'https://tenor.com/view/bunny-rabbit-eating-food-munchies-gif-17294792',
             '🧀': 'https://cdn.discordapp.com/emojis/716293527054843914.gif',
             '🧅': 'https://tenor.com/view/shrek-surprise-bathroom-ogre-gif-11492547',
-            'f': f'{message.author.display_name} has paid respects.'
+            'f': f'{message.author.display_name} has paid respects.',
+            'uhoh': 'Stinky.'
         }
 
         clean_message = ''.join(
-            message.content.lower().strip('.?!¡¿').split(' '))
+            message.content.lower().strip('.?!¡¿').split(' ').split('-'))
         if clean_message in replies:
             await message.channel.send(replies[clean_message])
