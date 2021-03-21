@@ -69,3 +69,7 @@ class BotListeners(commands.Cog):
         clean_message = ''.join(clean_message.split('-'))
         if clean_message in replies:
             await message.channel.send(replies[clean_message])
+        if clean_message == '🦖':
+            channel = message.guild.get_channel(822943809091665931)
+            if channel:
+                await channel.send("-play yee")
